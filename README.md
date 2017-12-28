@@ -14,14 +14,12 @@ This is a source code of uBoot for UAVX board.
 # Setup Architecture
     export ARCH=arm
 
-# Build 
-Here are instructions how to compile the source code
-
+# Clean 
     make distclean
 	
-# Make one of 
+# Select one of them
 -	make mx6q_uavx_35i00_defconfig
 -	make mx6q_uavx_37i00_defconfig
 
-# Make 
+# Build 
     make
