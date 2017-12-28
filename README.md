@@ -18,8 +18,8 @@ This is a source code of uBoot for UAVX board.
     make distclean
 	
 # Select one of them
--	make mx6q_uavx_35i00_defconfig
--	make mx6q_uavx_37i00_defconfig
+    make mx6q_uavx_35i00_defconfig
+    make mx6q_uavx_37i00_defconfig
 
 # Build 
     make
