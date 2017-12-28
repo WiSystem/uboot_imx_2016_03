@@ -1,6 +1,3 @@
-# About
-This is a source code of uBoot for UAVX board.
-
 # Download source code
     git clone https://github.com/WiSystem/uboot_imx_2016_03.git
     cd uboot_imx
@@ -17,7 +14,7 @@ This is a source code of uBoot for UAVX board.
 # Clean 
     make distclean
 	
-# Select one of them
+# Select defconfig
     make mx6q_uavx_35i00_defconfig
     make mx6q_uavx_37i00_defconfig
 
