@@ -109,11 +109,11 @@ static iomux_v3_cfg_t const usdhc3_pads[] = {
 
 };
 
-static iomux_v3_cfg_t const ecspi3_pads[] = {
-	MX6_PAD_DISP0_DAT0__ECSPI3_SCLK | MUX_PAD_CTRL(SPI_PAD_CTRL),
-	MX6_PAD_DISP0_DAT2__ECSPI3_MISO | MUX_PAD_CTRL(SPI_PAD_CTRL),
-	MX6_PAD_DISP0_DAT1__ECSPI3_MOSI | MUX_PAD_CTRL(SPI_PAD_CTRL),
-	MX6_PAD_DISP0_DAT5__GPIO4_IO26 | MUX_PAD_CTRL(NO_PAD_CTRL),
+static iomux_v3_cfg_t const ecspi1_pads[] = {
+	MX6_PAD_EIM_D16__ECSPI1_SCLK | MUX_PAD_CTRL(SPI_PAD_CTRL),
+	MX6_PAD_EIM_D17__ECSPI1_MISO | MUX_PAD_CTRL(SPI_PAD_CTRL),
+	MX6_PAD_EIM_D18__ECSPI1_MOSI | MUX_PAD_CTRL(SPI_PAD_CTRL),
+	MX6_PAD_EIM_EB2__GPIO2_IO30 | MUX_PAD_CTRL(NO_PAD_CTRL),
 };
 
 static struct i2c_pads_info i2c_pad_info0 = {
@@ -160,12 +160,12 @@ static void setup_spi(void)
 	u32 reg;
 	struct mxc_ccm_reg *ccm = (struct mxc_ccm_reg *)CCM_BASE_ADDR;
 
-	// Enable ECSPI3 clocks
+	// Enable ECSPI1 clocks
 	reg = readl(&ccm->CCGR1);
-	reg |= 0x30;
+	reg |= 0x03;
 	writel(reg, &ccm->CCGR1);
 
-	imx_iomux_v3_setup_multiple_pads(ecspi3_pads, ARRAY_SIZE(ecspi3_pads));
+	imx_iomux_v3_setup_multiple_pads(ecspi1_pads, ARRAY_SIZE(ecspi1_pads));
 }
 
 static iomux_v3_cfg_t const pcie_pads[] = {
@@ -352,7 +352,7 @@ int board_init(void)
 #ifdef CONFIG_MXC_SPI
 int board_spi_cs_gpio(unsigned bus, unsigned cs)
 {
-	return (bus == 2 && cs == 1) ? (IMX_GPIO_NR(4, 26)) : -1; //Set the chipselect of on board flash, don't forget to change also bus anc cs
+	return (bus == 0 && cs == 0) ? (IMX_GPIO_NR(2, 30)) : -1; //Set the chipselect of on board flash, don't forget to change also bus anc cs
 }
 #endif
 
