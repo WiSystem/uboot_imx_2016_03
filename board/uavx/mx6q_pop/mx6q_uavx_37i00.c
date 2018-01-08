@@ -29,6 +29,9 @@
 #include <netdev.h>
 #include <usb.h>
 
+#include <power/pfuze100_pmic.h>
+#include "../../freescale/common/pfuze.h"
+
 #include <i2c.h>
 #ifdef CONFIG_FSL_FASTBOOT
 #include <fsl_fastboot.h>
@@ -66,6 +69,7 @@ DECLARE_GLOBAL_DATA_PTR;
 	
 
 #define I2C_PAD MUX_PAD_CTRL(I2C_PAD_CTRL)
+#define I2C_PMIC	1
 
 int dram_init(void)
 {
@@ -333,6 +337,7 @@ int board_init(void)
 #ifdef CONFIG_MXC_SPI
 	setup_spi();
 #endif
+    
 	setup_i2c(0, CONFIG_SYS_I2C_SPEED, 0x7f, &i2c_pad_info0);
 	setup_i2c(1, CONFIG_SYS_I2C_SPEED, 0x7f, &i2c_pad_info1);
 	setup_i2c(2, CONFIG_SYS_I2C_SPEED, 0x7f, &i2c_pad_info2);
@@ -347,6 +352,100 @@ int board_init(void)
 #endif
 
 	return 0;
+}
+
+int power_init_board(void)
+{
+    
+    struct pmic *pfuze;
+	unsigned int reg;
+	int ret;
+
+	pfuze = pfuze_common_init(I2C_PMIC);
+	if (!pfuze)
+		return -ENODEV;
+
+	ret = pfuze_mode_init(pfuze, APS_PFM);
+	if (ret < 0)
+		return ret;
+
+	/* set SW3A to 1.25V for LPDDR2 */
+	pmic_reg_read(pfuze, PFUZE100_SW3AVOL, &reg);
+	reg &= ~0x3f;
+	reg |= 0x22;
+	pmic_reg_write(pfuze, PFUZE100_SW3AVOL, reg);
+
+	/* set SW2 to 3.2V */
+	pmic_reg_read(pfuze, PFUZE100_SW2VOL, &reg);
+	reg &= ~0x7f;
+	reg |= 0x72;
+	pmic_reg_write(pfuze, PFUZE100_SW2VOL, reg);
+
+	/* set VGEN1 to 1.5V */
+	pmic_reg_read(pfuze, PFUZE100_VGEN1VOL, &reg);
+	reg &= ~0x0f;
+	reg |= 0x0e;
+	pmic_reg_write(pfuze, PFUZE100_VGEN1VOL, reg);
+
+	/* set VGEN3 to 2.8V */
+	pmic_reg_read(pfuze, PFUZE100_VGEN3VOL, &reg);
+	reg &= ~0x0f;
+	reg |= 0x0a;
+	pmic_reg_write(pfuze, PFUZE100_VGEN3VOL, reg);
+
+	/* set VGEN4 to 2.5V */
+	pmic_reg_read(pfuze, PFUZE100_VGEN4VOL, &reg);
+	reg &= ~0x0f;
+	reg |= 0x07;
+	pmic_reg_write(pfuze, PFUZE100_VGEN4VOL, reg);
+
+	/* set VGEN5 to 3.3V */
+	pmic_reg_read(pfuze, PFUZE100_VGEN5VOL, &reg);
+	reg &= ~0x0f;
+   
+/*
+#ifdef CONFIG_QWKS_REV3
+	reg |= 0x07;
+#else
+	reg |= 0x0f;
+#endif
+*/
+    reg |= 0x07;
+
+	pmic_reg_write(pfuze, PFUZE100_VGEN5VOL, reg);
+
+	/* set VGEN6 to 3.2V */
+	pmic_reg_read(pfuze, PFUZE100_VGEN6VOL, &reg);
+	reg &= ~0x0f;
+	reg |= 0x0e;
+	pmic_reg_write(pfuze, PFUZE100_VGEN6VOL, reg);
+
+	/* set SW1AB staby volatage 0.975V*/
+	pmic_reg_read(pfuze, PFUZE100_SW1ABSTBY, &reg);
+	reg &= ~0x3f;
+	reg |= 0x1b;
+	pmic_reg_write(pfuze, PFUZE100_SW1ABSTBY, reg);
+
+	/* set SW1AB/VDDARM step ramp up time from 16us to 4us/25mV */
+	pmic_reg_read(pfuze, PFUZE100_SW1ABCONF, &reg);
+	reg &= ~0xc0;
+	reg |= 0x40;
+	pmic_reg_write(pfuze, PFUZE100_SW1ABCONF, reg);
+
+	/* set SW1C staby volatage 0.975V*/
+	pmic_reg_read(pfuze, PFUZE100_SW1CSTBY, &reg);
+	reg &= ~0x3f;
+	reg |= 0x1b;
+	pmic_reg_write(pfuze, PFUZE100_SW1CSTBY, reg);
+
+	/* set SW1C/VDDSOC step ramp up time to from 16us to 4us/25mV */
+	pmic_reg_read(pfuze, PFUZE100_SW1CCONF, &reg);
+	reg &= ~0xc0;
+	reg |= 0x40;
+	pmic_reg_write(pfuze, PFUZE100_SW1CCONF, reg);
+
+	return 0;
+        
 }
 
 #ifdef CONFIG_MXC_SPI
