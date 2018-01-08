@@ -78,6 +78,9 @@ int dram_init(void)
 	return 0;
 }
 
+#ifdef CONFIG_LPDDR2_512MB
+
+#else
 void dram_init_banksize(void)
 {
 	gd->bd->bi_dram[0].start = PHYS_SDRAM_0;
@@ -85,6 +88,7 @@ void dram_init_banksize(void)
 	gd->bd->bi_dram[1].start = PHYS_SDRAM_1;
 	gd->bd->bi_dram[1].size = (phys_size_t)CONFIG_DDR_MB * 1024 * 1024;
 }
+#endif
 
 static iomux_v3_cfg_t const uart1_pads[] = {
 	MX6_PAD_CSI0_DAT10__UART1_TX_DATA | MUX_PAD_CTRL(UART_PAD_CTRL),  
@@ -173,13 +177,13 @@ static void setup_spi(void)
 	imx_iomux_v3_setup_multiple_pads(ecspi1_pads, ARRAY_SIZE(ecspi1_pads));
 }
 
+/*
 static iomux_v3_cfg_t const pcie_pads[] = {
-	MX6_PAD_SD1_DAT0__GPIO1_IO16 | MUX_PAD_CTRL(PULLUP_PAD_CTRL),	/* DIS */
-	MX6_PAD_SD4_DAT3__GPIO2_IO11 | MUX_PAD_CTRL(PULLUP_PAD_CTRL),	/* WAKE */
-	MX6_PAD_SD1_CMD__GPIO1_IO18 | MUX_PAD_CTRL(PULLUP_PAD_CTRL),	/* RESET */
+	MX6_PAD_SD1_DAT0__GPIO1_IO16 | MUX_PAD_CTRL(PULLUP_PAD_CTRL),	// DIS 
+	MX6_PAD_SD4_DAT3__GPIO2_IO11 | MUX_PAD_CTRL(PULLUP_PAD_CTRL),	// WAKE
+	MX6_PAD_SD1_CMD__GPIO1_IO18 | MUX_PAD_CTRL(PULLUP_PAD_CTRL),	// RESET
 };
 
-/*
 static void setup_pcie(void)
 {
 	imx_iomux_v3_setup_multiple_pads(pcie_pads, ARRAY_SIZE(pcie_pads));
