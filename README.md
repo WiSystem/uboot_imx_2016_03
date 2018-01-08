@@ -1,22 +1,24 @@
 # Download source code
     git clone https://github.com/WiSystem/uboot_imx_2016_03.git
-    cd uboot_imx
+    cd uboot_imx_2016_03
 
-# Install & select cross compiler
-
-### If you do not have any compiler installed (or you are not sure)
+# Install 
     sudo apt-get install gcc-arm-linux-gnueabihf
+
+## Select cross compiler
     export CROSS_COMPILE=arm-linux-gnueabihf-
 	
-# Setup Architecture
+## Setup Architecture
     export ARCH=arm
 
-# Clean 
+## Clean 
     make distclean
 	
-# Select defconfig
+## Select defconfig
     make mx6q_uavx_35i00_defconfig
     make mx6q_uavx_37i00_defconfig
 
-# Build 
+## Build 
     make
+    
+    
