@@ -28,15 +28,16 @@
     1. Write u-boot.imx to SD card, just copy 
     
     2. Insert cart to i.MX6 and load data to ram 
-        fatload mmc 0:1 0x10800000 /u-boot.imx    
+        uboot => fatload mmc 0:1 0x10800000 /u-boot.imx    
         where mmc 0:1 
         0 -> first SD card slot 
         1 -> first partition FAT12
         
     3. Write new uboot to SPI memory 
-        sf probe 0
-        sf erase 0 0xC0000
-        sf write 0x10800000 0x400 0x80000
+        uboot => sf probe 0
+        uboot => sf erase 0 0xC0000
+        uboot => sf write 0x10800000 0x400 0x80000
 
-    4. Reset by power cycle 
+    4. Reset by power cycle or by uboot
+        uboot => reset
     
